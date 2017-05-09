@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {Message} from "./message.model"
+import {MessageService} from "./message.service";
 @Component({
     selector: 'app-message',
     templateUrl: './message.component.html',
@@ -24,7 +25,15 @@ export class MessageComponent {
 
     color = 'green';
 
+    // get the messageservice that is also used in the input and list component
+    constructor(private messageService: MessageService) {
+
+    }
     onEdit() {
         this.editClicked.emit('A new value');
+    }
+
+    onDelete() {
+        this.messageService.deleteMessage(this.message);
     }
 }
