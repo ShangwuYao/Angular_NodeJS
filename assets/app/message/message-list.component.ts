@@ -1,6 +1,7 @@
 
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {Message} from "./message.model";
+import {MessageService} from "./message.service";
 
 @Component({
     selector: 'app-message-list',
@@ -14,10 +15,15 @@ import {Message} from "./message.model";
         </div>
     `
 })
-export class MessageListComponent {
-        messages: Message[] = [
-        new Message('1 Message', 'Tom'),
-        new Message('2 Message', 'Tom'),
-        new Message('3 Message', 'Tom')
-    ]
+export class MessageListComponent implements OnInit {
+    messages: Message[];
+
+    constructor(private messageServices: MessageService) {
+
+    }
+
+    ngOnInit() {
+        // 由于是引用传递，所以能自动update，非常方便
+        this.messages = this.messageServices.getMessages();
+    }
 }
