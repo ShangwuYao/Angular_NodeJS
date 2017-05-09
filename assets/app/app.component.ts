@@ -20,9 +20,5 @@ import {Message} from "./message/message.model";
     `]
 })
 export class AppComponent {
-    messages: Message[] = [
-        new Message('1 Message', 'Tom'),
-        new Message('2 Message', 'Tom'),
-        new Message('3 Message', 'Tom')
-    ]
+
 };
