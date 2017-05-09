@@ -1,4 +1,4 @@
-<article class="panel panel-default">
+<article class="panel panel-default" [ngStyle]="{backgroundColor: color}" (mouseenter)="color = 'yellow'">
     <div class="panel-body">
         {{ message.content}}
     </div>
@@ -7,7 +7,7 @@
             {{ message.username }}
         </div>
         <div class="config">
-            <a href="#">Edit</a>
+            <a href="#" (click)="onEdit()">Edit</a>
             <a href="#">Delete</a>
         </div>
     </footer>
