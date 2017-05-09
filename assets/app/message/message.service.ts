@@ -1,15 +1,44 @@
 import {Message} from "./message.model";
+import {Http} from "@angular/http";
+import {Injectable} from "@angular/core";
+import 'rxjs/Rx';
+import {Observable} from "rxjs/Observable";
 
+@Injectable()
 export class MessageService {
     messages: Message[] = [];
 
+    constructor(private http: Http) {}
+
     addMessage(message: Message) {
         this.messages.push(message);
-        console.log(this.messages);
+        const body = JSON.stringify(message);
+        // send request to messsageRoutes in the back end
+        // this line does not send the request yet
+        // because no one has subscribed yet
+        // so return it to the component
+        // and subscribe in there
+        return this.http.post('http://localhost:3000/message', body, {headers: {'Content-Type': 'application/json'}})
+            .map((response: Response) => response.json())
+            .catch((error: any) => Observable.throw(error.toString()));
     }
 
+
     getMessages() {
-        return this.messages;
+        return this.http.get('http://localhost:3000/message')
+            .map((response: Response) => {
+                // obj corresponding to the response on the server
+                const messages = response.json().obj;
+                // transform the messages to real Message objects
+                let transformedMessages: Message[] = [];
+                for (let message of messages) {
+                    // order matters here
+                    transformedMessages.push(new Message(message.content, 'Dummy', message.id, null));
+                }
+                this.messages = transformedMessages;
+                return transformedMessages;
+            })
+            .catch((error: any) => Observable.throw(error.toString()));
     }
 
     deleteMessage(message: Message){

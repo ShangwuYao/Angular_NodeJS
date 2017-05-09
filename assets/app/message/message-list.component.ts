@@ -24,6 +24,12 @@ export class MessageListComponent implements OnInit {
 
     ngOnInit() {
         // 由于是引用传递，所以能自动update，非常方便
-        this.messages = this.messageServices.getMessages();
+        // 改成http response，所以要用subscribe
+        this.messageServices.getMessages()
+            .subscribe(
+                (messages: Message[]) => {
+                    this.messages = messages;
+                }
+            );
     }
 }
