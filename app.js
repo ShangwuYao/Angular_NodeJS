@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 
 var appRoutes = require('./routes/app');
 var messageRoutes = require('./routes/messages');
+var userRoutes = require('./routes/user');
 
 mongoose.connect('localhost:27017/node-angular');
 
@@ -34,6 +35,7 @@ app.use(function (req, res, next) {
 
 // order matters, or all goes to appRoutes
 app.use('/message', messageRoutes);
+app.use('/user', userRoutes);
 app.use('/', appRoutes);
 
 
