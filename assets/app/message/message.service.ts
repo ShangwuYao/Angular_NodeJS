@@ -12,7 +12,6 @@ export class MessageService {
     constructor(private http: Http) {}
 
     addMessage(message: Message) {
-        this.messages.push(message);
         const body = JSON.stringify(message);
         // send request to messsageRoutes in the back end
         // this line does not send the request yet
@@ -20,7 +19,13 @@ export class MessageService {
         // so return it to the component
         // and subscribe in there
         return this.http.post('http://localhost:3000/message', body, {headers: {'Content-Type': 'application/json'}})
-            .map((response: Response) => response.json())
+            .map((response: Response) => {
+                const result =  response.json();
+                // also use _id in here, because it is also a response from the backend
+                const message =  new Message(result.obj.content, 'Dummy', result.obj._id, null);
+                this.messages.push(message);
+                return message;
+            })
             .catch((error: any) => Observable.throw(error.toString()));
     }
 
@@ -34,7 +39,8 @@ export class MessageService {
                 let transformedMessages: Message[] = [];
                 for (let message of messages) {
                     // order matters here
-                    transformedMessages.push(new Message(message.content, 'Dummy', message.id, null));
+                    // message._id, because the messages returned here is the message model in the backend
+                    transformedMessages.push(new Message(message.content, 'Dummy', message._id, null));
                 }
                 this.messages = transformedMessages;
                 return transformedMessages;
@@ -44,6 +50,13 @@ export class MessageService {
 
     editMessage(message: Message) {
         this.messageIsEdit.emit(message);
+    }
+
+    updateMessage(message: Message) {
+        const body = JSON.stringify(message);
+        return this.http.patch('http://localhost:3000/message/' + message.messageId, body, {headers: {'Content-Type': 'application/json'}})
+            .map((response: Response) => response.json())
+            .catch((error: any) => Observable.throw(error.toString()));
     }
 
     deleteMessage(message: Message){

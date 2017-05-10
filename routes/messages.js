@@ -44,4 +44,35 @@ router.post('/', function (req, res, next) {
     });
 });
 
+router.patch('/:id', function (req, res, next) {
+    Message.findById(req.params.id, function (err, message) {
+        if (err) {
+            return res.status(500).json({
+                title: 'An error occurred',
+                error: err
+            });
+        }
+        if (!message) {
+            return res.status(500).json({
+                title: 'No message found!',
+                error: {message: 'Message not found'}
+            });
+        }
+        message.content = req.body.content;
+        message.save(function (err, result) {
+            if (err){
+                return res.status(500).json({
+                    title: 'An error occurred',
+                    error: err
+                });
+            }
+            // no need to return here
+            res.status(200).json({
+                message: 'Successfully updated the message',
+                obj: result
+            });
+        })
+    });
+});
+
 module.exports = router;
