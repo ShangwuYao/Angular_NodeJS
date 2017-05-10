@@ -61,5 +61,10 @@ export class MessageService {
 
     deleteMessage(message: Message){
         this.messages.splice(this.messages.indexOf(message), 1);
+        // call the delete router on the backend
+        return this.http.delete('http://localhost:3000/message/' + message.messageId)
+            .map((response: Response) => response.json())
+            .catch((error: any) => Observable.throw(error.toString()));
+
     }
 }

@@ -29,9 +29,6 @@ export class MessageInputComponent implements OnInit{
                 );
             this.message = null;  // if it isn't null, the html page will get it
 
-
-
-
         } else {
             const message = new Message(form.value.content, 'Tom');
             this.messageService.addMessage(message)
