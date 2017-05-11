@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
+var jwt = require('jsonwebtoken');
 
+var User = require('../models/user');
 var Message = require('../models/message');
 
 // again, invisible #/messsage
@@ -21,25 +23,57 @@ router.get('/', function (req, res, next) {
         });
 });
 
+// authentication
+// why "use", it means on each request, this is reached
+router.use('/', function (req, res, next) {
+    // token is a query parameter, like: /...?token=slfkjlewf
+    // is it a valid token?
+    jwt.verify(req.query.token, 'secret', function (err, decoded) {
+        if (err) {
+            return res.status(401).json({
+                title: 'Not Authenticated',
+                error: err
+            });
+        }
+        // it could continue to reach to the url that it matches
+        next();
+    })
+});
+
 // have invisible #/message before
 // insert a message into the database
 router.post('/', function (req, res, next) {
-    var message = new Message({
-        // if it is text/plain, then it has no property content, and will thus cause an error
-        content: req.body.content
-    });
-    message.save(function(err, result){
-        // if there is error, return
+    // retrieve user from token, token could be decrypted
+    // while password can't
+    var decoded = jwt.decode(req.query.token);
+    User.findById(decoded.user._id, function (err, user) {
         if (err){
             return res.status(500).json({
                 title: 'An error occurred',
                 error: err
             });
         }
-        // no need to return here
-        res.status(201).json({
-            message: 'Successfully saved the message',
-            obj: result
+
+        var message = new Message({
+            // if it is text/plain, then it has no property content, and will thus cause an error
+            content: req.body.content,
+            user: user
+        });
+        message.save(function(err, result){
+            // if there is error, return
+            if (err){
+                return res.status(500).json({
+                    title: 'An error occurred',
+                    error: err
+                });
+            }
+            user.messages.push(result);
+            user.save();
+            // no need to return here
+            res.status(201).json({
+                message: 'Successfully saved the message',
+                obj: result
+            });
         });
     });
 });

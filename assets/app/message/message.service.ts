@@ -1,5 +1,5 @@
 import {Message} from "./message.model";
-import {Http} from "@angular/http";
+import {Http, Response} from "@angular/http";
 import {EventEmitter, Injectable} from "@angular/core";
 import 'rxjs/Rx';
 import {Observable} from "rxjs/Observable";
@@ -13,12 +13,15 @@ export class MessageService {
 
     addMessage(message: Message) {
         const body = JSON.stringify(message);
+        const token = localStorage.getItem('token')
+            ? '?token=' + localStorage.getItem('token')
+            : '';
         // send request to messsageRoutes in the back end
         // this line does not send the request yet
         // because no one has subscribed yet
         // so return it to the component
         // and subscribe in there
-        return this.http.post('http://localhost:3000/message', body, {headers: {'Content-Type': 'application/json'}})
+        return this.http.post('http://localhost:3000/message' + token, body, {headers: {'Content-Type': 'application/json'}})
             .map((response: Response) => {
                 const result =  response.json();
                 // also use _id in here, because it is also a response from the backend
@@ -54,15 +57,21 @@ export class MessageService {
 
     updateMessage(message: Message) {
         const body = JSON.stringify(message);
-        return this.http.patch('http://localhost:3000/message/' + message.messageId, body, {headers: {'Content-Type': 'application/json'}})
+        const token = localStorage.getItem('token')
+            ? '?token=' + localStorage.getItem('token')
+            : '';
+        return this.http.patch('http://localhost:3000/message/' + message.messageId + token, body, {headers: {'Content-Type': 'application/json'}})
             .map((response: Response) => response.json())
             .catch((error: any) => Observable.throw(error.toString()));
     }
 
     deleteMessage(message: Message){
         this.messages.splice(this.messages.indexOf(message), 1);
+        const token = localStorage.getItem('token')
+            ? '?token=' + localStorage.getItem('token')
+            : '';
         // call the delete router on the backend
-        return this.http.delete('http://localhost:3000/message/' + message.messageId)
+        return this.http.delete('http://localhost:3000/message/' + message.messageId + token)
             .map((response: Response) => response.json())
             .catch((error: any) => Observable.throw(error.toString()));
 
