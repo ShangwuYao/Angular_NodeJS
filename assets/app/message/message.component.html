@@ -7,8 +7,8 @@
             {{ message.username }}
         </div>
         <div class="config">
-            <a (click)="onEdit()">Edit</a>
-            <a (click)="onDelete()">Delete</a>
+            <a (click)="onEdit()" *ngIf="belongToUser()">Edit</a>
+            <a (click)="onDelete()" *ngIf="belongToUser()">Delete</a>
         </div>
     </footer>
 </article>
