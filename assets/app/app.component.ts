@@ -22,4 +22,4 @@ import {MessageService} from "./message/message.service";
 })
 export class AppComponent {
 
-};
+}

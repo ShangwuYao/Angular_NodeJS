@@ -5,12 +5,13 @@ import {MessageInputComponent} from "./message-input.component";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {MessageService} from "./message.service";
+import {MessageComponent} from "./message.component";
 
 @NgModule({
     declarations: [
         MessagesComponent,
         MessageListComponent,
-        MessagesComponent,
+        MessageComponent,
         MessageInputComponent
     ],
     imports: [
