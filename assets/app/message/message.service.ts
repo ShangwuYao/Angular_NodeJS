@@ -1,5 +1,5 @@
 import {Message} from "./message.model";
-import {Http, Response} from "@angular/http";
+import {Http, Response, Headers} from "@angular/http";
 import {EventEmitter, Injectable} from "@angular/core";
 import 'rxjs/Rx';
 import {Observable} from "rxjs/Observable";
@@ -22,7 +22,8 @@ export class MessageService {
         // because no one has subscribed yet
         // so return it to the component
         // and subscribe in there
-        return this.http.post('http://localhost:3000/message' + token, body, {headers: {'Content-Type': 'application/json'}})
+        const headers = new Headers({'Content-Type': 'application/json'});
+        return this.http.post('http://localhost:3000/message' + token, body, {headers: headers})
             .map((response: Response) => {
                 const result =  response.json();
                 // also use _id in here, because it is also a response from the backend
@@ -79,7 +80,8 @@ export class MessageService {
         const token = localStorage.getItem('token')
             ? '?token=' + localStorage.getItem('token')
             : '';
-        return this.http.patch('http://localhost:3000/message/' + message.messageId + token, body, {headers: {'Content-Type': 'application/json'}})
+        const headers = new Headers({'Content-Type': 'application/json'});
+        return this.http.patch('http://localhost:3000/message/' + message.messageId + token, body, {headers: headers})
             .map((response: Response) => response.json())
             .catch((error: any) => {
                 this.errorService.handleError(error.json());

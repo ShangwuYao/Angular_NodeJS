@@ -3,3 +3,7 @@
 /typings
 /public/js/
 npm-debug.log
+
+# ignore compile files
+*.ngfactory.ts
+*.ngsummary.json
